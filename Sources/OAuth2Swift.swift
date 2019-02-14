@@ -92,7 +92,7 @@ open class OAuth2Swift: OAuthSwift {
             if let fragment = url.fragment, !fragment.isEmpty {
                 responseParameters += fragment.parametersFromQueryString
             }
-            if let accessToken = responseParameters["access_token"] {
+            if let accessToken = responseParameters["id_token"] {
                 this.client.credential.oauthToken = accessToken.safeStringByRemovingPercentEncoding
                 if let expiresIn: String = responseParameters["expires_in"], let offset = Double(expiresIn) {
                     this.client.credential.oauthTokenExpiresAt = Date(timeInterval: offset, since: Date())
@@ -125,7 +125,7 @@ open class OAuth2Swift: OAuthSwift {
                 let message = NSLocalizedString(error, comment: description)
                 failure?(OAuthSwiftError.serverError(message: message))
             } else {
-                let message = "No access_token, no code and no error provided by server"
+                let message = "No id_token, no code and no error provided by server"
                 failure?(OAuthSwiftError.serverError(message: message))
             }
         }
@@ -215,7 +215,7 @@ open class OAuth2Swift: OAuthSwift {
                 responseParameters = response.string?.parametersFromQueryString ?? [:]
             }
 
-            guard let accessToken = responseParameters["access_token"] as? String else {
+            guard let accessToken = responseParameters["id_token"] as? String else {
                 let message = NSLocalizedString("Could not get Access Token", comment: "Due to an error in the OAuth2 process, we couldn't get a valid token.")
                 failure?(OAuthSwiftError.serverError(message: message))
                 return
